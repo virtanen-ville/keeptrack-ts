@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ProjectCard from "../ProjectCard";
 import userEvent from "@testing-library/user-event";
@@ -47,11 +47,11 @@ describe("<ProjectCard />", () => {
 	// Test that the edit button calls the correct function and passes the correct project
 	// ! Unit test
 	test("should call handler when edit is clicked", async () => {
-		const user = userEvent.setup();
-
+		//const user = userEvent.setup();
 		setup();
-
-		await user.click(screen.getByRole("button", { name: /edit/i }));
+		const editButton = await screen.findByRole("button", { name: /edit/i });
+		fireEvent.click(editButton);
+		//await user.click(screen.getByRole("button", { name: /edit/i }));
 		expect(handleEditMock).toBeCalledTimes(1);
 		expect(handleEditMock).toBeCalledWith(project);
 	});

@@ -12,49 +12,7 @@ import {
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 
-// Set some sample projects
-const mockProjects = [
-	{
-		id: 1,
-		name: "Testi Nimi 1",
-		description: "Testi kuvaus 1",
-		imageUrl: "/assets/placeimg_500_300_arch4.jpg",
-		contractTypeId: 3,
-		contractSignedOn: "2022-08-04T22:39:41.473Z",
-		budget: 100000,
-		isActive: true,
-	},
-	{
-		id: 2,
-		name: "Testi Nimi 2",
-		description: "Testi kuvaus 2",
-		imageUrl: "/assets/placeimg_500_300_arch4.jpg",
-		contractTypeId: 3,
-		contractSignedOn: "2022-08-04T22:39:41.473Z",
-		budget: 200000,
-		isActive: false,
-	},
-	{
-		id: 3,
-		name: "Testi Nimi 3",
-		description: "Testi kuvaus 3",
-		imageUrl: "/assets/placeimg_500_300_arch4.jpg",
-		contractTypeId: 3,
-		contractSignedOn: "2022-08-04T22:39:41.473Z",
-		budget: 50000,
-		isActive: true,
-	},
-	{
-		id: 4,
-		name: "Testi Nimi 4",
-		description: "Testi kuvaus 4",
-		imageUrl: "/assets/placeimg_500_300_arch4.jpg",
-		contractTypeId: 3,
-		contractSignedOn: "2022-08-04T22:39:41.473Z",
-		budget: 150000,
-		isActive: false,
-	},
-];
+import { mockProjects } from "../mockProjects";
 
 // We mock a server with msw and return a mocked response taht has the projects as JSON. This server get function is called at the useEffect hook in ProjectsPage.tsx
 const server = setupServer(

@@ -1,8 +1,8 @@
-import { MOCK_PROJECTS } from '../MockProjects';
+import { MOCK_PROJECTS } from "../MockProjectsOLD";
 const projectAPI = {
-  get(page = 1, limit = 20) {
-    return Promise.resolve(MOCK_PROJECTS);
-  },
+	get(page = 1, limit = 20) {
+		return Promise.resolve(MOCK_PROJECTS);
+	},
 };
 
 export { projectAPI };
