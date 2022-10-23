@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ProjectCard from "../ProjectCard";
-import userEvent from "@testing-library/user-event";
 
 describe("<ProjectCard />", () => {
 	let project: any = {};
@@ -54,5 +53,13 @@ describe("<ProjectCard />", () => {
 		//await user.click(screen.getByRole("button", { name: /edit/i }));
 		expect(handleEditMock).toBeCalledTimes(1);
 		expect(handleEditMock).toBeCalledWith(project);
+	});
+
+	// Test that the project has a link that takes to the correct url
+	// ! Unit test
+	test("should have a link to the clicked project", async () => {
+		setup();
+		const projectLink = await screen.findByRole("link");
+		expect(projectLink).toHaveAttribute("href", `/projects/${project.id}`);
 	});
 });

@@ -1,23 +1,20 @@
 import { render, screen } from "@testing-library/react";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import ProjectList from "../ProjectList";
-import { MOCK_PROJECTS } from "../MockProjectsOLD";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { store } from "../../state";
+import { mockProjects } from "../mockProjects";
 
 describe("<ProjectList />", () => {
 	const setup = () =>
 		render(
 			<Provider store={store}>
 				<MemoryRouter>
-					<ProjectList projects={MOCK_PROJECTS} />
+					<ProjectList projects={mockProjects} />
 				</MemoryRouter>
 			</Provider>
 		);
-
-	beforeEach(() => {});
 
 	test("should render without crashing", () => {
 		setup();
@@ -27,21 +24,18 @@ describe("<ProjectList />", () => {
 	test("should display list", () => {
 		setup();
 		expect(screen.getAllByRole("heading")).toHaveLength(
-			MOCK_PROJECTS.length
+			mockProjects.length
 		);
-		expect(screen.getAllByRole("img")).toHaveLength(MOCK_PROJECTS.length);
-		expect(screen.getAllByRole("link")).toHaveLength(MOCK_PROJECTS.length);
-		expect(screen.getAllByRole("button")).toHaveLength(
-			MOCK_PROJECTS.length
-		);
+		expect(screen.getAllByRole("img")).toHaveLength(mockProjects.length);
+		expect(screen.getAllByRole("link")).toHaveLength(mockProjects.length);
+		expect(screen.getAllByRole("button")).toHaveLength(mockProjects.length);
 	});
 
 	test("should display form when edit clicked", async () => {
 		setup();
-		// eslint-disable-next-line testing-library/render-result-naming-convention
-		const user = userEvent.setup();
-		await user.click(
-			screen.getByRole("button", { name: /edit Wisozk Group/i })
+		const view = userEvent.setup();
+		await view.click(
+			screen.getByRole("button", { name: /edit Testi Nimi 1/i })
 		);
 		expect(
 			screen.getByRole("form", {
@@ -52,19 +46,18 @@ describe("<ProjectList />", () => {
 
 	test("should display image and remove form when cancel clicked", async () => {
 		setup();
-		// eslint-disable-next-line testing-library/render-result-naming-convention
-		const user = userEvent.setup();
-		await user.click(
-			screen.getByRole("button", { name: /edit Wisozk Group/i })
+		const view = userEvent.setup();
+		await view.click(
+			screen.getByRole("button", { name: /edit Testi Nimi 1/i })
 		);
-		await user.click(
+		await view.click(
 			screen.getByRole("button", {
 				name: /cancel/i,
 			})
 		);
 		expect(
 			screen.getByRole("img", {
-				name: /wisozk group/i,
+				name: /Testi Nimi 1/i,
 			})
 		).toBeInTheDocument();
 		expect(

@@ -10,7 +10,6 @@ import {
 	SAVE_PROJECT_SUCCESS,
 } from "../projectTypes";
 import { projectAPI } from "../../projectAPI";
-import { MOCK_PROJECTS } from "../../MockProjectsOLD";
 import { mockProjects, mockProject } from "../../mockProjects";
 jest.mock("../../projectAPI");
 
@@ -55,14 +54,9 @@ describe("Project Actions", () => {
 	});
 
 	test("should return error", () => {
-		projectAPI.get = jest
-			.fn
-			// leave this commented initially
-			// projectAPI.get
-			()
-			.mockImplementationOnce(() => {
-				return Promise.reject("failed");
-			});
+		projectAPI.get = jest.fn().mockImplementationOnce(() => {
+			return Promise.reject("failed");
+		});
 
 		const expectedActions = [
 			{ type: LOAD_PROJECTS_REQUEST },

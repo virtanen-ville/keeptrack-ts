@@ -1,13 +1,16 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { Provider } from "react-redux";
-import { store } from "../../state";
+//import { Provider } from "react-redux";
+//import { store } from "../../state";
 import ProjectsPage from "../ProjectsPage";
 import {
-	render,
 	screen,
 	waitForElementToBeRemoved,
+	fireEvent,
 } from "@testing-library/react";
+import { renderWithProviders } from "../state/testUtils";
+import { Project } from "../Project";
+import userEvent from "@testing-library/user-event";
 
 import { rest } from "msw";
 import { setupServer } from "msw/node";
@@ -15,21 +18,24 @@ import { setupServer } from "msw/node";
 import { mockProjects } from "../mockProjects";
 
 // We mock a server with msw and return a mocked response taht has the projects as JSON. This server get function is called at the useEffect hook in ProjectsPage.tsx
-const server = setupServer(
+const handlers = [
 	rest.get("http://localhost:4000/projects", (req, res, ctx) => {
 		return res(ctx.json(mockProjects));
-	})
-);
+	}),
+
+	rest.put("http://localhost:4000/projects/*", (req, res, ctx) => {
+		return res(ctx.json(req.body));
+	}),
+];
+
+const server = setupServer(...handlers);
 
 describe("<ProjectsPage />", () => {
 	const setup = () => {
-		render(
-			<Provider store={store}>
-				{/* We need MemoryRouter from React Router to render Router elements (such as Link) */}
-				<MemoryRouter>
-					<ProjectsPage />
-				</MemoryRouter>
-			</Provider>
+		renderWithProviders(
+			<MemoryRouter>
+				<ProjectsPage />
+			</MemoryRouter>
 		);
 	};
 
@@ -103,6 +109,73 @@ describe("<ProjectsPage />", () => {
 
 			const regex = new RegExp(testCase.message, "i");
 			expect(await screen.findByText(regex)).toBeInTheDocument();
+		});
+	});
+
+	// This is pretty extensive integration test, to test changing information and getting it on screen
+	// ! Integration test
+	test("should open form and get input and change information", async () => {
+		setup();
+
+		let updatedProject = new Project({
+			id: 1,
+			name: "Uusinimi 1",
+			description: "Uusikuvaus 1",
+			budget: 1000,
+		});
+
+		const view = userEvent.setup();
+
+		let nameTextBox1 = screen.queryByRole("textbox", {
+			name: /project name/i,
+		});
+		expect(nameTextBox1).not.toBeInTheDocument();
+
+		const editButton = await screen.findByRole("button", {
+			name: /edit Testi Nimi 1/i,
+		});
+		fireEvent.click(editButton);
+		let nameTextBox = screen.getByRole("textbox", {
+			name: /project name/i,
+		});
+		let descriptionTextBox = screen.getByRole("textbox", {
+			name: /project description/i,
+		});
+		let budgetTextBox = screen.getByRole("spinbutton", {
+			name: /project budget/i,
+		});
+		await view.clear(nameTextBox);
+		await view.type(nameTextBox, updatedProject.name);
+		expect(nameTextBox).toHaveValue(updatedProject.name);
+
+		await view.clear(descriptionTextBox);
+		await view.type(descriptionTextBox, updatedProject.description);
+		expect(descriptionTextBox).toHaveValue(updatedProject.description);
+
+		await view.clear(budgetTextBox);
+		await view.type(budgetTextBox, updatedProject.budget.toString());
+		expect(budgetTextBox).toHaveValue(updatedProject.budget);
+
+		const submitButton = screen.getByRole("button", { name: /save/i });
+		const cancelButton = screen.getByRole("button", { name: /cancel/i });
+
+		await view.click(submitButton).then(() => {
+			waitForElementToBeRemoved(() => screen.queryByRole("form")).then(
+				() => {
+					console.log("form removed");
+				}
+			);
+		});
+		await view.click(cancelButton).then(() => {
+			// eslint-disable-next-line testing-library/no-debugging-utils
+			//screen.debug();
+			expect(screen.queryByRole("form")).not.toBeInTheDocument();
+			expect(
+				screen.getByRole("img", { name: /uusinimi 1/i })
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole("heading", { name: /uusinimi 1/i })
+			).toBeInTheDocument();
 		});
 	});
 });
