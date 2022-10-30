@@ -532,7 +532,7 @@
     },
     {
       "id": 54,
-      "name": "Anderson LLC",
+      "name": "AAAAA",
       "description": "Diverse incremental algorithm. Expedita laudantium sit quisquam sit nobis eum nam ea natus.",
       "imageUrl": "/assets/placeimg_500_300_arch10.jpg",
       "contractTypeId": 2,
@@ -762,13 +762,13 @@
     },
     {
       "id": 77,
-      "name": "Abshire and Sons",
+      "name": "Testinimi Projektille 1",
       "description": "Ergonomic mission-critical knowledge user. Consequatur pariatur eos molestiae qui aut dolorem laudantium nesciunt doloribus.",
       "imageUrl": "/assets/placeimg_500_300_arch6.jpg",
       "contractTypeId": 6,
       "contractSignedOn": "2018-08-16T18:49:06.477Z",
-      "budget": -1,
-      "isActive": true
+      "budget": -10,
+      "isActive": false
     },
     {
       "id": 78,
