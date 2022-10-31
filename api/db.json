@@ -942,12 +942,12 @@
     },
     {
       "id": 95,
-      "name": "Armstrong - Hands",
-      "description": "Persistent 3rd generation capability. Sint omnis asperiores voluptas sapiente delectus blanditiis earum ut voluptatem.",
+      "name": "Uusinimi 1",
+      "description": "Uusikuvaus 1",
       "imageUrl": "/assets/placeimg_500_300_arch6.jpg",
       "contractTypeId": 2,
       "contractSignedOn": "2010-09-24T21:02:41.601Z",
-      "budget": 38853,
+      "budget": 1000,
       "isActive": true
     },
     {

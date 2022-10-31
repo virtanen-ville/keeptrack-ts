@@ -1,6 +1,6 @@
-//import { MOCK_PROJECTS } from "../MockProjectsOLD";
 import { projectAPI } from "../projectAPI";
-import { mockProjects, mockProject } from "../mockProjects";
+import { allProjects, mockProject } from "../mockProjects";
+import { Project } from "../Project";
 
 describe("projectAPI.ts", () => {
 	// Test to check if the projectAPI returns the correct data
@@ -10,21 +10,21 @@ describe("projectAPI.ts", () => {
 			status: 200,
 			statusText: "OK",
 		});
-		mockResponse.json = () => Promise.resolve(mockProjects);
+		mockResponse.json = () => Promise.resolve(allProjects);
 		jest.spyOn(window, "fetch").mockImplementation(() =>
 			Promise.resolve(mockResponse)
 		);
 
 		const data = await projectAPI.get();
-		expect(data).toEqual(mockProjects);
+		expect(data).toEqual(allProjects);
 	});
 
 	// Test to check if the projectAPI returns the correct project
 	// ! Unit test
 	test("should return a single record", async () => {
 		const idToFind = 1;
-		const responseProject = mockProjects.find(
-			(project) => project.id === idToFind
+		const responseProject = allProjects.find(
+			(project: Project) => project.id === idToFind
 		);
 		const mockResponse = new Response(undefined, {
 			status: 200,

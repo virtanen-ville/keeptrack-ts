@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import ProjectCard from "../ProjectCard";
+import { allProjects } from "../mockProjects";
 
 describe("<ProjectCard />", () => {
 	let project: any = {};
@@ -15,18 +16,7 @@ describe("<ProjectCard />", () => {
 	};
 	// Before every test case, we want to reset the mock function and the project object
 	beforeEach(() => {
-		project = {
-			id: 111,
-			name: "Testiprojekti",
-			description: "Testikuvaus",
-			budget: 10,
-			imageUrl: "/assets/placeimg_500_300_arch12.jpg",
-			contractTypeId: 2,
-			contractSignedOn: new Date("2009-12-18T21:46:47.944Z"),
-			isActive: true,
-			isNew: false,
-		};
-		handleEditMock = jest.fn();
+		project = allProjects[Math.floor(Math.random() * allProjects.length)];
 	});
 
 	// ! Smoke test
@@ -35,12 +25,21 @@ describe("<ProjectCard />", () => {
 	});
 
 	// Test that the relevant info is rendered
-	// ! Integration test
+	// ! Unit test
 	test("renders project properly", () => {
 		setup();
+		const shortenedDescription =
+			project.description.substring(0, 60) + "...";
 		expect(screen.getByRole("heading")).toHaveTextContent(project.name);
-		expect(screen.getByText(/testikuvaus/i)).toBeInTheDocument();
-		expect(screen.getByText(/budget : 10/i)).toBeInTheDocument();
+		expect(screen.getByText(shortenedDescription)).toBeInTheDocument();
+		const budgetText = new RegExp(
+			project.budget.toLocaleString("en-EN"),
+			"i"
+		);
+
+		// Test that the budget is formatted correctly
+
+		expect(screen.getByText(/budget/i)).toBeInTheDocument();
 	});
 
 	// Test that the edit button calls the correct function and passes the correct project

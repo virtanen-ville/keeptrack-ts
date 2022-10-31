@@ -4,9 +4,14 @@ import ProjectList from "../ProjectList";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { store } from "../../state";
-import { mockProjects } from "../mockProjects";
+import { allProjects } from "../mockProjects";
+import { Project } from "../Project";
 
 describe("<ProjectList />", () => {
+	// Pass in the projects as props to the component
+	const mockProjects = allProjects
+		.sort((a: Project, b: Project) => a.name.localeCompare(b.name))
+		.slice(0, 20);
 	const setup = () =>
 		render(
 			<Provider store={store}>
@@ -16,11 +21,15 @@ describe("<ProjectList />", () => {
 			</Provider>
 		);
 
+	// We test that the conmponent renders without crashing
+	// ! Unit test
 	test("should render without crashing", () => {
 		setup();
 		expect(screen).toBeDefined();
 	});
 
+	// We test that the component renders the correct number of projects
+	// ! Unit test
 	test("should display list", () => {
 		setup();
 		expect(screen.getAllByRole("heading")).toHaveLength(
@@ -31,12 +40,15 @@ describe("<ProjectList />", () => {
 		expect(screen.getAllByRole("button")).toHaveLength(mockProjects.length);
 	});
 
+	// Test that the component shows a form of the clicked project
+	// ! Unit test
 	test("should display form when edit clicked", async () => {
 		setup();
 		const view = userEvent.setup();
-		await view.click(
-			screen.getByRole("button", { name: /edit Testi Nimi 1/i })
-		);
+		const editButton = screen.getByRole("button", {
+			name: /edit armstrong, crona and ziemann/i,
+		});
+		await view.click(editButton);
 		expect(
 			screen.getByRole("form", {
 				name: /edit a project/i,
@@ -44,12 +56,16 @@ describe("<ProjectList />", () => {
 		).toBeInTheDocument();
 	});
 
+	// Test that the component removes the form when cancel clicked and again shows clicked project as normal card
+	// ! Unit test
 	test("should display image and remove form when cancel clicked", async () => {
 		setup();
 		const view = userEvent.setup();
-		await view.click(
-			screen.getByRole("button", { name: /edit Testi Nimi 1/i })
-		);
+		const editButton = screen.getByRole("button", {
+			name: /edit armstrong, crona and ziemann/i,
+		});
+
+		await view.click(editButton);
 		await view.click(
 			screen.getByRole("button", {
 				name: /cancel/i,
@@ -57,7 +73,7 @@ describe("<ProjectList />", () => {
 		);
 		expect(
 			screen.getByRole("img", {
-				name: /Testi Nimi 1/i,
+				name: /armstrong, crona and ziemann/i,
 			})
 		).toBeInTheDocument();
 		expect(
