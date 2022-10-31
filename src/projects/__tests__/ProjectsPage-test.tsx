@@ -164,6 +164,39 @@ describe("<ProjectsPage />", () => {
 		expect(newTextElement).toBeInTheDocument();
 	});
 
+	// This is another integration test, to test getting more projects from database as we click the more button
+	// ! Integration test
+	test("should get more projects from database", async () => {
+		setup();
+		const moreButton = await screen.findByRole("button", {
+			name: /more\.\.\./i,
+		});
+		//  screen.getByRole("button", {
+		// 	name: /more/i,
+		// });
+
+		// while (
+		// 	store.getState().projectState.projects.length < allProjects.length
+		// ) {
+		// 	console.log(allProjects.length);
+		// 	console.log(store.getState().projectState.projects.length);
+		// 	fireEvent.click(moreButton);
+		// }
+
+		fireEvent.click(moreButton);
+
+		// Assume that all projects are loaded
+		expect(store.getState().projectState.projects.length).toEqual(
+			allProjects.length
+		);
+		const allProjectCards = screen.getAllByRole("img");
+		expect(allProjectCards).toHaveLength(allProjects.length);
+
+		expect(
+			screen.queryByRole("button", { name: /more/i })
+		).not.toBeInTheDocument();
+	});
+
 	// Integration test, to test clicking on one card and get routed to new page with the project info information
 	// ! Integration test
 	test("should navigate to new route with the right project", async () => {
