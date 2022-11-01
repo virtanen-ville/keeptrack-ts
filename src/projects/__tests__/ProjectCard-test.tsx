@@ -32,13 +32,6 @@ describe("<ProjectCard />", () => {
 			project.description.substring(0, 60) + "...";
 		expect(screen.getByRole("heading")).toHaveTextContent(project.name);
 		expect(screen.getByText(shortenedDescription)).toBeInTheDocument();
-		const budgetText = new RegExp(
-			project.budget.toLocaleString("en-EN"),
-			"i"
-		);
-
-		// Test that the budget is formatted correctly
-
 		expect(screen.getByText(/budget/i)).toBeInTheDocument();
 	});
 

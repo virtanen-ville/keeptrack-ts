@@ -20,8 +20,8 @@ function ProjectList({ projects }: ProjectListProps) {
 
 	return (
 		<div className="row">
-			{projects.map((project, idx) => (
-				<div key={idx} className="cols-sm">
+			{projects.map((project) => (
+				<div key={project.id} className="cols-sm">
 					{project === projectBeingEdited ? (
 						<ProjectForm
 							project={project}

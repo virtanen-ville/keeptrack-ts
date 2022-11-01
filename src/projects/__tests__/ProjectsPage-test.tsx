@@ -94,8 +94,8 @@ describe("<ProjectsPage />", () => {
 		).toBeInTheDocument();
 	});
 
-	// We test that the projects are displayed when the data is fetched. This is already an integration test, but this component itself has pretty much nothing to test.
-	// ! Integration test
+	// We test that the projects are displayed when the data is fetched.
+	// ! Unit test
 	test("should show right amount of projects", async () => {
 		setup();
 		const loadingText = screen.getByText(/loading/i);
@@ -104,7 +104,9 @@ describe("<ProjectsPage />", () => {
 		expect(await screen.findAllByRole("img")).toHaveLength(20);
 	});
 
-	test("should show correct errors on server error", async () => {
+	// Test that the error is shown when the server returns an error
+	// ! Unit test
+	test("should show correct errors on server error 500", async () => {
 		server.use(
 			rest.get("http://localhost:4000/projects", (req, res, ctx) => {
 				return res(ctx.status(500));
@@ -114,6 +116,36 @@ describe("<ProjectsPage />", () => {
 		expect(
 			await screen.findByText(
 				/There was an error retrieving the projects. Please try again./i
+			)
+		).toBeInTheDocument();
+	});
+
+	// Test that the error is shown when the server returns an error
+	// ! Unit test
+	test("should show correct errors on server error 401", async () => {
+		server.use(
+			rest.get("http://localhost:4000/projects", (req, res, ctx) => {
+				return res(ctx.status(401));
+			})
+		);
+		setup();
+		expect(
+			await screen.findByText(/Please login again./i)
+		).toBeInTheDocument();
+	});
+
+	// Test that the error is shown when the server returns an error
+	// ! Unit test
+	test("should show correct errors on server error 403", async () => {
+		server.use(
+			rest.get("http://localhost:4000/projects", (req, res, ctx) => {
+				return res(ctx.status(401));
+			})
+		);
+		setup();
+		expect(
+			await screen.findByText(
+				/You do not have permission to view the project(s)./i
 			)
 		).toBeInTheDocument();
 	});
@@ -169,18 +201,6 @@ describe("<ProjectsPage />", () => {
 	test("should get more projects from database", async () => {
 		setup();
 
-		// while (
-		// 	store.getState().projectState.projects.length < allProjects.length
-		// ) {
-		// 	console.log(allProjects.length);
-		// 	console.log(store.getState().projectState.projects.length);
-		// 	fireEvent.click(
-		// 		await screen.findByRole("button", {
-		// 			name: /more\.\.\./i,
-		// 		})
-		// 	);
-		// }
-
 		fireEvent.click(
 			await screen.findByRole("button", {
 				name: /more\.\.\./i,
@@ -190,7 +210,7 @@ describe("<ProjectsPage />", () => {
 			const allProjectCards = await screen.findAllByRole("button", {
 				name: /edit/i,
 			});
-
+			// Should load 20 more projects
 			expect(allProjectCards).toHaveLength(40);
 		});
 
@@ -203,7 +223,7 @@ describe("<ProjectsPage />", () => {
 			const allProjectCards = await screen.findAllByRole("button", {
 				name: /edit/i,
 			});
-
+			// Should load 20 more projects
 			expect(allProjectCards).toHaveLength(60);
 		});
 		fireEvent.click(
@@ -216,7 +236,7 @@ describe("<ProjectsPage />", () => {
 			const allProjectCards = await screen.findAllByRole("button", {
 				name: /edit/i,
 			});
-
+			// Should load 20 more projects
 			expect(allProjectCards).toHaveLength(80);
 		});
 
@@ -230,27 +250,22 @@ describe("<ProjectsPage />", () => {
 			const allProjectCards = await screen.findAllByRole("button", {
 				name: /edit/i,
 			});
+			// Should load the rest of the projects (there are 97 in the mocked database)
 			expect(allProjectCards).toHaveLength(97);
 		});
 
-		fireEvent.click(
-			await screen.findByRole("button", {
-				name: /more\.\.\./i,
-			})
-		);
-
-		// Assume that all projects are loaded
+		// Assume that all projects are loaded (Redux store should have all the projects)
 		expect(store.getState().projectState.projects.length).toEqual(
 			allProjects.length
 		);
 
-		const allProjectCards1 = await screen.findAllByRole("button", {
+		const allProjectCards = await screen.findAllByRole("button", {
 			name: /edit/i,
 		});
 
-		expect(allProjectCards1).toHaveLength(97);
-		const allProjectCards = await screen.findAllByRole("img");
-		expect(allProjectCards).toHaveLength(allProjects.length);
+		expect(allProjectCards).toHaveLength(97);
+		const allProjectImages = await screen.findAllByRole("img");
+		expect(allProjectImages).toHaveLength(allProjects.length);
 
 		// TODO; Fix this (button should remove itself when all loaded)
 		if (

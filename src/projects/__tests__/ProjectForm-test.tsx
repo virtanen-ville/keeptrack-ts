@@ -121,6 +121,6 @@ describe("<ProjectForm />", () => {
 		await view.type(budgetTextBox, "-1");
 
 		// TODO: Fix this bug
-		//expect(screen.getByRole("alert")).toBeInTheDocument();
+		expect(screen.getByRole("alert")).toBeInTheDocument();
 	});
 });

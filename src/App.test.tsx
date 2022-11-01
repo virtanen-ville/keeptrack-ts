@@ -45,7 +45,6 @@ describe("<App />", () => {
 	test("should render navigation links Home and Projects", () => {
 		render(<App />);
 
-		// We could get the link by name too, but lets check for the text instead.
 		//const homeLink = screen.getByRole("link", { name: /home/i });
 		const links = screen.getAllByRole("link");
 
